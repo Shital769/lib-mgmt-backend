@@ -1,28 +1,30 @@
-import userSchema from "./userSchema.js";
+import UserSchema from "./UserSchema.js"
 
-//user CRUD
+// user CRUD
 //create user
-
 export const createUser = (userData) => {
-  return userSchema(userData).save();
-};
+  return UserSchema(userData).save()
+}
 
-//get singler user by user's id
+export const getUserByEmail = (email) => {
+  return UserSchema.findOne({ email })
+}
+
+//get single user by user _id
 export const getUserById = (_id) => {
-  return userSchema.findById(_id);
-};
-
-//get single user by filter, filter must be an object
+  return UserSchema.findById(_id)
+}
+//get single user by filter, filter must be an objectw
 export const getAnyUser = (filter) => {
-  return userSchema.findOne(filter);
-};
+  return UserSchema.findOne(filter)
+}
 
-//update the user, @_id is string and @updateData is an object
+// update user, @_id is string and @udpateData is an object
 export const updateUserById = (_id, updateData) => {
-  return userSchema.findByIdAndUpdate(_id, updateData);
-};
+  return UserSchema.findByIdAndUpdate(_id, updateData)
+}
 
-//delete user by _id
+// delete user by _id.
 export const deleteUserById = (_id) => {
-  return userSchema.findByIdAndDelete(_id);
-};
+  return UserSchema.findByIdAndDelete(_id)
+}
