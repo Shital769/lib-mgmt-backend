@@ -1,6 +1,6 @@
 import express from "express";
 import { ERROR, SUCCESS } from "../constant.js";
-import { comparePassword, hashPassword } from "../helpers/BrcyptHelper.js";
+import { comparePassword, hashPassword } from "../helpers/BcryptHelper.js";
 const router = express.Router();
 import {
   createUser,

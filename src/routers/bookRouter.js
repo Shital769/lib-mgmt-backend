@@ -32,7 +32,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //get borrowed books by specific users
-router.get("/borrowedBooks", async (res, res, next) => {
+router.get("/borrowedBooks", async (req, res, next) => {
   try {
     const books = await getBorrowedBooks(req.headers.authorization);
     return res.json(books);
