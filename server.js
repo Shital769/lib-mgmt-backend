@@ -24,7 +24,6 @@ import transactionRouter from "./src/routers/transactionRouter.js"
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/book", isAuth, bookRouter)
 app.use("/api/v1/transaction", isAuth, transactionRouter)
-app.use("/api/v1/user", userRouter);
 
 //all uncaught request
 app.use("*", (req, res) => {
