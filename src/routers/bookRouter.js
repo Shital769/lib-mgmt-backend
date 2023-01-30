@@ -11,11 +11,15 @@ import {
   getBorrowedBooks,
 } from "../models/Book/BookModel.js";
 
-import { postTransaction } from "../models/Transaction/TransactionModel.js";
+import {
+  findTransactionAndUpdate,
+  getTransactionByQuery,
+  postTransaction,
+} from "../models/Transaction/TransactionModel.js";
 
 import { getUserById } from "../models/userModel/userModel.js";
 
-const router = express.router();
+const router = express.Router();
 
 //get books
 router.get("/", async (req, res, next) => {
@@ -128,12 +132,19 @@ router.post("/borrow", async (req, res, next) => {
   }
 });
 
-//Retuen a book
+//Return a book
 router.patch("/return", async (req, res, next) => {
   try {
     const book = await getBookById(req.body.bookId);
     const user = await getUserById(req.headers.authorization);
-    if (book?._id && user?._id) {
+
+    const transaction = await getTransactionByQuery(user?._id, book?.isbn);
+
+    const updateTransaction = await findTransactionAndUpdate(transaction?._id, {
+      returnDate: new Date(),
+    });
+
+    if (updateTransaction?.returnDate) {
       const updateBook = await findBookAndUpdate(book._id, {
         $pull: { borrowedBy: user._id },
       });
@@ -145,7 +156,7 @@ router.patch("/return", async (req, res, next) => {
           })
         : res.json({
             status: "error",
-            message: "Unable to return book. Please try again later!",
+            message: "Unable to return this book! Please try again later",
           });
     }
   } catch (error) {
@@ -155,18 +166,24 @@ router.patch("/return", async (req, res, next) => {
 
 //Delete a book
 
-router.delete("/", async (req, res, mext) => {
+router.delete("/", async (req, res, next) => {
   try {
+    const book = await getBookById(req.body.bookId);
+    if (book?.borrowedBy.length) {
+      return res.json({
+        status: "success",
+        message: "Unable to delete book. This book has not been returned yet!",
+      });
+    }
     const del = await findBookAndDelete(req.body.bookId);
-
     del?._id
       ? res.json({
-          status: "sucess",
-          message: "Book deleted successfully!",
+          status: "success",
+          message: "Book Deleted Successfully!",
         })
       : res.json({
           status: "error",
-          message: "Unable to delete book!",
+          message: "Unable to delete book! ",
         });
   } catch (error) {
     next(error);

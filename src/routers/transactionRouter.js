@@ -1,5 +1,15 @@
-import express from "express"
+import express from "express";
 
-const router = express.Router()
+import { getAllTransactions } from "../models/Transaction/TransactionModel.js";
 
-export default router
+const router = express.Router();
+
+router.get("/", async (req, res, next) => {
+  try {
+    const transactions = await getAllTransactions();
+    return res.json(transactions);
+  } catch (error) {
+    next(erorr);
+  }
+});
+export default router;
